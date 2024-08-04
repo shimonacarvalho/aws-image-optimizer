@@ -10,3 +10,6 @@ cdk.out
 .DS_Store
 
 package-lock.json
+image-processing.zip
+url-rewrite.zip
+

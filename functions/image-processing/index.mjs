@@ -1,14 +1,20 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
+//aws lambda update-function-code --profile shimona --function-name ImgTransformationStack-imageoptimization4C49F079-JZek1Y7WYCOS --zip-file fileb://image-processing.zip
+//aws lambda publish-version --profile shimona --function-name ImgTransformationStack-imageoptimization4C49F079-JZek1Y7WYCOS 
+//aws lambda list-versions-by-function --function-name YourLambdaFunctionName
+//20210610+-+Milky+Way/_1270139.jpg
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import Sharp from 'sharp';
+import fetch from 'node-fetch';
 
 const s3Client = new S3Client();
 const S3_ORIGINAL_IMAGE_BUCKET = process.env.originalImageBucketName;
 const S3_TRANSFORMED_IMAGE_BUCKET = process.env.transformedImageBucketName;
 const TRANSFORMED_IMAGE_CACHE_TTL = process.env.transformedImageCacheTTL;
 const MAX_IMAGE_SIZE = parseInt(process.env.maxImageSize);
+const BASE_URL="https://starlightphotos.s3.us-west-001.backblazeb2.com";
 
 export const handler = async (event) => {
     // Validate if this is a GET request
@@ -17,6 +23,8 @@ export const handler = async (event) => {
     var imagePathArray = event.requestContext.http.path.split('/');
     // get the requested image operations
     var operationsPrefix = imagePathArray.pop();
+
+    console.log("Running new code");
     // get the original image path images/rio/1.jpg
     imagePathArray.shift();
     var originalImagePath = imagePathArray.join('/');
@@ -25,16 +33,21 @@ export const handler = async (event) => {
     // Downloading original image
     let originalImageBody;
     let contentType;
+    const imageUrl = `${BASE_URL}/${originalImagePath.replace(/ /g, '+')}`;
     try {
-        const getOriginalImageCommand = new GetObjectCommand({ Bucket: S3_ORIGINAL_IMAGE_BUCKET, Key: originalImagePath });
-        const getOriginalImageCommandOutput = await s3Client.send(getOriginalImageCommand);
-        console.log(`Got response from S3 for ${originalImagePath}`);
+        console.log(`Fetching image from URL: ${imageUrl}`);
+        const response = await fetch(imageUrl);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch image from URL: ${imageUrl}`);
+        }
+        console.log(`Got response from URL for ${originalImagePath}`);
 
-        originalImageBody = getOriginalImageCommandOutput.Body.transformToByteArray();
-        contentType = getOriginalImageCommandOutput.ContentType;
+        originalImageBody = await response.buffer();
+        contentType = response.headers.get('content-type');
     } catch (error) {
-        return sendError(500, 'Error downloading original image', error);
+        return sendError(500, `Error downloading original image ${imageUrl}`, error);
     }
+    console.log("Image downloaded!")
     let transformedImage = Sharp(await originalImageBody, { failOn: 'none', animated: true });
     // Get image orientation to rotate if needed
     const imageMetadata = await transformedImage.metadata();
@@ -42,6 +55,7 @@ export const handler = async (event) => {
     const operationsJSON = Object.fromEntries(operationsPrefix.split(',').map(operation => operation.split('=')));
     // variable holding the server timing header value
     var timingLog = 'img-download;dur=' + parseInt(performance.now() - startTime);
+    console.log("starting transform")
     startTime = performance.now();
     try {
         // check if resizing is requested
@@ -76,11 +90,12 @@ export const handler = async (event) => {
         return sendError(500, 'error transforming image', error);
     }
     timingLog = timingLog + ',img-transform;dur=' + parseInt(performance.now() - startTime);
-
+    console.log("ending transform")
     // handle gracefully generated images bigger than a specified limit (e.g. Lambda output object limit)
     const imageTooBig = Buffer.byteLength(transformedImage) > MAX_IMAGE_SIZE;
 
     // upload transformed image back to S3 if required in the architecture
+    console.log("trying to write transformed image")
     if (S3_TRANSFORMED_IMAGE_BUCKET) {
         startTime = performance.now();
         try {

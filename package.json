@@ -5,7 +5,9 @@
     "image-optimization": "bin/image-optimization.js"
   },
   "scripts": {
-    "prebuild": "npm install sharp --prefix functions/image-processing/ --os=linux --cpu=x64",
+    "prebuild": "npm install sharp node-fetch --prefix functions/image-processing/ --os=linux --cpu=x64",
+    "zip-lambda": "cd functions/image-processing && zip -r ../image-processing.zip . -x 'package*.json'",
+    "update-lambda": "cd functions && aws lambda update-function-code --profile shimona --function-name ImgTransformationStack-imageoptimization4C49F079-JZek1Y7WYCOS --zip-file fileb://image-processing.zip",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",

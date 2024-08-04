@@ -1,0 +1,33 @@
+//aws lambda update-function-code --profile shimona --function-name ImgTransformationStack-imageoptimization4C49F079-JZek1Y7WYCOS --zip-file fileb://image-processing.zip
+{
+    "FunctionName": "ImgTransformationStack-imageoptimization4C49F079-JZek1Y7WYCOS",
+    "FunctionArn": "arn:aws:lambda:us-east-1:081934556148:function:ImgTransformationStack-imageoptimization4C49F079-JZek1Y7WYCOS",
+    "Runtime": "nodejs20.x",
+    "Role": "arn:aws:iam::081934556148:role/ImgTransformationStack-imageoptimizationServiceRole-vNU7htHY5SEA",
+    "Handler": "index.handler",
+    "CodeSize": 7438466,
+    "Description": "",
+    "Timeout": 60,
+    "MemorySize": 1500,
+    "LastModified": "2024-08-04T00:53:25.000+0000",
+    "CodeSha256": "DPsUsCA/AEuKzihpnJbz1Um6qO9NfZjk+jW26cklRtg=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "transformedImageCacheTTL": "max-age=31622400",
+            "maxImageSize": "4700000",
+            "transformedImageBucketName": "imgtransformationstack-s3transformedimagebucket6d8-wqd7yotdorja",
+            "originalImageBucketName": "starlight-ogimages"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "2b325943-af10-4444-9081-e109de952349",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"

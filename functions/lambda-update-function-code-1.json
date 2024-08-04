@@ -1,0 +1,48 @@
+{
+    "FunctionName": "ImgTransformationStack-imageoptimization4C49F079-JZek1Y7WYCOS",
+    "FunctionArn": "arn:aws:lambda:us-east-1:081934556148:function:ImgTransformationStack-imageoptimization4C49F079-JZek1Y7WYCOS",
+    "Runtime": "nodejs20.x",
+    "Role": "arn:aws:iam::081934556148:role/ImgTransformationStack-imageoptimizationServiceRole-vNU7htHY5SEA",
+    "Handler": "index.handler",
+    "CodeSize": 2305,
+    "Description": "",
+    "Timeout": 60,
+    "MemorySize": 1500,
+    "LastModified": "2024-08-04T00:34:39.000+0000",
+    "CodeSha256": "VYAHSjEkmuvO8znNBg0vKcp4xnGhfqiDcQ7p0ooBZPw=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "transformedImageCacheTTL": "max-age=31622400",
+            "maxImageSize": "4700000",
+            "transformedImageBucketName": "imgtransformationstack-s3transformedimagebucket6d8-wqd7yotdorja",
+            "originalImageBucketName": "starlight-ogimages"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "eab5a0d8-fd68-4a7d-9e4e-085c7c1274d9",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:66a145a0c659d27a0f5c781ef79f03464c01811b9c2f47d1287ba3f315da8983"
+    },
+    "LoggingConfig": {
+        "LogFormat": "Text",
+        "LogGroup": "/aws/lambda/ImgTransformationStack-imageoptimization4C49F079-JZek1Y7WYCOS"
+    }
+}
